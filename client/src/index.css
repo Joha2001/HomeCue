@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 244 70% 59%; /* Indigo color from design */
+  --primary-foreground: 211 100% 99%;
+  --secondary: 142 71% 45%; /* Green from design */
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 36 100% 52%; /* Yellow/accent from design */
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  
+  /* Chart colors */
+  --chart-1: var(--primary);
+  --chart-2: var(--secondary);
+  --chart-3: var(--accent);
+  --chart-4: 0 84% 60%;
+  --chart-5: 271 91% 65%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 244 70% 59%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 142 71% 45%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 36 100% 52%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    height: 100%;
+  }
+
+  body {
+    @apply font-sans antialiased bg-gray-50 text-foreground;
+    overflow-x: hidden;
+    height: 100%;
+    /* iOS-specific optimizations */
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+  }
+  
+  /* Fix iOS specific issues */
+  @supports (-webkit-touch-callout: none) {
+    html, body {
+      height: -webkit-fill-available;
+    }
+    
+    input, button, select, textarea {
+      -webkit-appearance: none;
+      border-radius: var(--radius);
+    }
+    
+    /* Improve form interactions */
+    input[type="text"], 
+    input[type="email"], 
+    input[type="password"],
+    textarea {
+      font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Fix content selection */
+    p, h1, h2, h3, h4, h5, h6, span, div {
+      user-select: text;
+    }
+  }
+  
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #16a1bd;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #138ea6;
+  }
+  
+  /* Hide scrollbar but allow scrolling */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
+  
+  /* Task card animations */
+  .task-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Smooth page transitions */
+  .page-transition {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  /* Better tap feedback for mobile */
+  .tap-highlight {
+    @apply active:bg-gray-100 transition-colors duration-150;
+  }
+
+  /* Bottom spacing for mobile to account for navigation */
+  .pb-safe {
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0));
+  }
+  
+  /* Media queries for responsive layout */
+  @media (max-width: 768px) {
+    .desktop-sidebar {
+      display: none;
+    }
+    .mobile-nav {
+      display: flex;
+    }
+    .main-content {
+      margin-left: 0;
+      padding-bottom: 5rem; /* Extra space for mobile nav */
+    }
+    
+    /* Optimize text for mobile */
+    h1, h2, h3 {
+      word-break: break-word;
+    }
+    
+    /* iOS-specific mobile improvements */
+    @supports (-webkit-touch-callout: none) {
+      /* Improve touch targets for iOS */
+      button, 
+      a, 
+      .interactive-element {
+        min-height: 44px; /* Apple's recommended minimum touch target size */
+        padding: 10px 14px;
+      }
+      
+      /* Improve scrolling containers */
+      .scrollable-container {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        overscroll-behavior-y: contain;
+        /* Momentum scrolling for iOS */
+        scroll-snap-type: y proximity;
+      }
+      
+      /* iOS task list optimization */
+      .task-list {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+        /* Prevent accidental scrolling on parent containers */
+        overscroll-behavior: contain;
+      }
+      
+      /* Fix bottom navigation spacing with safe area */
+      .mobile-nav {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        height: auto;
+      }
+      
+      /* Better form elements */
+      input[type="checkbox"], 
+      input[type="radio"] {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .desktop-sidebar {
+      display: block;
+    }
+    .mobile-nav {
+      display: none;
+    }
+    .main-content {
+      margin-left: 16rem;
+    }
+  }
+}

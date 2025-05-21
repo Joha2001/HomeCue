@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>homecue Mobile Login</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+      color: #333;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #16a1bd, #0d789c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    .remember {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .remember input {
+      width: auto;
+      margin-right: 8px;
+    }
+    
+    button {
+      background: linear-gradient(to right, #16a1bd, #0d789c);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    button:disabled {
+      opacity: 0.7;
+    }
+    
+    .success {
+      color: #16a1bd;
+      margin: 20px 0;
+      font-weight: 500;
+      display: none;
+    }
+    
+    .error {
+      color: #ff3333;
+      margin: 10px 0;
+      font-weight: 500;
+      display: none;
+    }
+    
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #16a1bd;
+      width: 30px;
+      height: 30px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">homecue</div>
+    <h2>Mobile Login</h2>
+    
+    <div id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" value="demo@example.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" value="password123" required>
+      </div>
+      
+      <div class="remember">
+        <input type="checkbox" id="remember" checked>
+        <label for="remember">Remember me</label>
+      </div>
+      
+      <button id="login-button">Sign In</button>
+      
+      <div id="error-message" class="error"></div>
+    </div>
+    
+    <div id="success-message" class="success">Login successful! Redirecting...</div>
+    <div id="loader" class="loader"></div>
+  </div>
+
+  <script>
+    // Login function
+    async function attemptLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      
+      const loginButton = document.getElementById('login-button');
+      const loginForm = document.getElementById('login-form');
+      const errorMessage = document.getElementById('error-message');
+      const successMessage = document.getElementById('success-message');
+      const loader = document.getElementById('loader');
+      
+      // Disable button and show loader
+      loginButton.disabled = true;
+      errorMessage.style.display = 'none';
+      loader.style.display = 'block';
+      
+      try {
+        // Send login request
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password, remember }),
+          credentials: 'include',
+        });
+        
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || 'Login failed');
+        }
+        
+        // Login successful
+        loginForm.style.display = 'none';
+        successMessage.style.display = 'block';
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          // Try the root path first which should redirect to dashboard
+          window.location.href = '/';
+        }, 1500);
+        
+      } catch (error) {
+        // Show error
+        errorMessage.textContent = error.message || 'Login failed. Please try again.';
+        errorMessage.style.display = 'block';
+        loginButton.disabled = false;
+        loader.style.display = 'none';
+      }
+    }
+    
+    // Add event listener to button
+    document.getElementById('login-button').addEventListener('click', (e) => {
+      e.preventDefault();
+      attemptLogin();
+    });
+    
+    // Auto-login for demo account
+    document.addEventListener('DOMContentLoaded', () => {
+      // Uncomment to enable auto-login
+      // attemptLogin();
+    });
+  </script>
+</body>
+</html>

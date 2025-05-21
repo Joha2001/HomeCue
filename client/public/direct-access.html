@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>homecue | Login</title>
+  <style>
+    :root {
+      --primary-color: #16a1bd;
+      --primary-dark: #0d789c;
+      --background-color: #f7f9fc;
+      --text-color: #333;
+      --light-gray: #e2e8f0;
+      --error-color: #e53e3e;
+      --success-color: #38a169;
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-family);
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
+    #app {
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    
+    .card-content {
+      padding: 1.5rem;
+    }
+    
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    h1 {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #1a202c;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #4a5568;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+      transition: border-color 0.15s ease;
+    }
+    
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(22, 161, 189, 0.1);
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    
+    .remember-me input {
+      margin-right: 0.5rem;
+    }
+    
+    button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    
+    button:active {
+      transform: scale(0.98);
+    }
+    
+    .status {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      display: none;
+    }
+    
+    .status.error {
+      background-color: #fed7d7;
+      color: #c53030;
+    }
+    
+    .status.success {
+      background-color: #c6f6d5;
+      color: #2f855a;
+    }
+    
+    .loader {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s ease infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+      display: none;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Dashboard Styles */
+    .dashboard {
+      display: none;
+    }
+    
+    .dashboard-header {
+      background-color: white;
+      border-bottom: 1px solid var(--light-gray);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .dashboard-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .dashboard-subtitle {
+      font-size: 0.875rem;
+      color: #718096;
+    }
+    
+    .tab-bar {
+      display: flex;
+      background-color: white;
+      border-radius: 0.5rem;
+      overflow: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: #4a5568;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+    
+    .task-list {
+      background-color: white;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    
+    .task-list-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-gray);
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    
+    .task-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      align-items: center;
+    }
+    
+    .task-item:last-child {
+      border-bottom: none;
+    }
+    
+    .task-checkbox {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 0.25rem;
+      border: 2px solid #cbd5e0;
+      margin-right: 0.75rem;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    
+    .task-checkbox.checked {
+      border-color: var(--primary-color);
+      background-color: var(--primary-color);
+    }
+    
+    .task-checkbox.checked:after {
+      content: "";
+      position: absolute;
+      display: block;
+      width: 0.25rem;
+      height: 0.5rem;
+      border: solid white;
+      border-width: 0 0.125rem 0.125rem 0;
+      transform: rotate(45deg);
+      top: 0.25rem;
+      left: 0.4375rem;
+    }
+    
+    .task-content {
+      flex-grow: 1;
+      margin-right: 0.75rem;
+    }
+    
+    .task-title {
+      font-weight: 500;
+      color: #2d3748;
+      margin-bottom: 0.25rem;
+    }
+    
+    .task-title.completed {
+      text-decoration: line-through;
+      color: #a0aec0;
+    }
+    
+    .task-meta {
+      font-size: 0.75rem;
+      color: #718096;
+    }
+    
+    .task-priority {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    
+    .priority-high {
+      background-color: #fed7d7;
+      color: #c53030;
+    }
+    
+    .priority-medium {
+      background-color: #feebc8;
+      color: #c05621;
+    }
+    
+    .priority-low {
+      background-color: #c6f6d5;
+      color: #2f855a;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--light-gray);
+      z-index: 10;
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #718096;
+    }
+    
+    .bottom-nav-item.active {
+      color: var(--primary-color);
+    }
+    
+    .bottom-nav-icon {
+      margin-bottom: 0.25rem;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Login Card -->
+    <div class="card" id="login-card">
+      <div class="card-content">
+        <div class="logo">HomeCue</div>
+        <h1>Welcome Back</h1>
+        
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" value="demo@example.com" autocomplete="email">
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" value="password123" autocomplete="current-password">
+          </div>
+          
+          <div class="remember-me">
+            <input type="checkbox" id="remember" checked>
+            <label for="remember">Remember me</label>
+          </div>
+          
+          <button type="submit" id="login-button">
+            <span id="loader" class="loader"></span>
+            <span id="button-text">Sign In</span>
+          </button>
+        </form>
+        
+        <div id="login-status" class="status"></div>
+      </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+      <div class="card">
+        <div class="dashboard-header">
+          <div class="dashboard-title">Welcome Back, Demo User</div>
+          <div class="dashboard-subtitle">Here's what you need to tackle today.</div>
+        </div>
+        
+        <div class="card-content">
+          <div class="tab-bar">
+            <div class="tab active" data-tab="today">Today</div>
+            <div class="tab" data-tab="upcoming">Upcoming</div>
+            <div class="tab" data-tab="calendar">Calendar</div>
+            <div class="tab" data-tab="vendors">Vendors</div>
+          </div>
+          
+          <div class="tab-content" id="today-tab">
+            <div class="task-list">
+              <div class="task-list-header">Today's Tasks</div>
+              <div class="task-item">
+                <div class="task-checkbox"></div>
+                <div class="task-content">
+                  <div class="task-title">Check HVAC filters</div>
+                  <div class="task-meta">Monthly maintenance</div>
+                </div>
+                <div class="task-priority priority-medium">Medium</div>
+              </div>
+              <div class="task-item">
+                <div class="task-checkbox checked"></div>
+                <div class="task-content">
+                  <div class="task-title completed">Water plants</div>
+                  <div class="task-meta">Weekly maintenance</div>
+                </div>
+                <div class="task-priority priority-low">Low</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="upcoming-tab" style="display:none">
+            <div class="task-list">
+              <div class="task-list-header">Upcoming Tasks</div>
+              <div class="task-item">
+                <div class="task-checkbox"></div>
+                <div class="task-content">
+                  <div class="task-title">Pay mortgage</div>
+                  <div class="task-meta">Due in 2 days • Monthly payment</div>
+                </div>
+                <div class="task-priority priority-high">High</div>
+              </div>
+              <div class="task-item">
+                <div class="task-checkbox"></div>
+                <div class="task-content">
+                  <div class="task-title">Check water heater</div>
+                  <div class="task-meta">Due in 5 days • Quarterly maintenance</div>
+                </div>
+                <div class="task-priority priority-medium">Medium</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="calendar-tab" style="display:none">
+            <div style="text-align:center; padding:2rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#cbd5e0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <h3 style="margin-top:1rem; font-weight:500;">Calendar View</h3>
+              <p style="color:#718096; margin-top:0.5rem;">Calendar feature is available in the full app</p>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="vendors-tab" style="display:none">
+            <div class="task-list">
+              <div class="task-list-header">Available Vendors</div>
+              <div class="task-item">
+                <div class="task-content">
+                  <div class="task-title">ABC Plumbing</div>
+                  <div class="task-meta">Professional plumbing services</div>
+                </div>
+              </div>
+              <div class="task-item">
+                <div class="task-content">
+                  <div class="task-title">Elite Electricians</div>
+                  <div class="task-meta">Licensed electrical services</div>
+                </div>
+              </div>
+              <div class="task-item">
+                <div class="task-content">
+                  <div class="task-title">Green Gardens</div>
+                  <div class="task-meta">Landscaping services</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav" id="bottom-nav" style="display:none">
+    <div class="bottom-nav-item active" data-tab="today">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+      <span>Today</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="upcoming">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Upcoming</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="calendar">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span>Calendar</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="vendors">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span>Vendors</span>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elements
+      const loginForm = document.getElementById('login-form');
+      const loginButton = document.getElementById('login-button');
+      const buttonText = document.getElementById('button-text');
+      const loader = document.getElementById('loader');
+      const loginStatus = document.getElementById('login-status');
+      const loginCard = document.getElementById('login-card');
+      const dashboard = document.getElementById('dashboard');
+      const bottomNav = document.getElementById('bottom-nav');
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      const taskCheckboxes = document.querySelectorAll('.task-checkbox');
+      
+      // Handle login form submission
+      loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+        
+        // Show loading state
+        loginButton.disabled = true;
+        loader.style.display = 'inline-block';
+        buttonText.textContent = 'Signing in...';
+        loginStatus.className = 'status';
+        loginStatus.textContent = '';
+        loginStatus.style.display = 'none';
+        
+        try {
+          // Attempt login
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, remember }),
+            credentials: 'include'
+          });
+          
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Login failed');
+          }
+          
+          // Login successful - show success message
+          loginStatus.className = 'status success';
+          loginStatus.textContent = 'Login successful!';
+          loginStatus.style.display = 'block';
+          
+          // Show dashboard after a short delay
+          setTimeout(() => {
+            loginCard.style.display = 'none';
+            dashboard.style.display = 'block';
+            bottomNav.style.display = 'flex';
+          }, 1000);
+          
+        } catch (error) {
+          // Login failed - show error
+          loginStatus.className = 'status error';
+          loginStatus.textContent = error.message || 'An error occurred during login';
+          loginStatus.style.display = 'block';
+          
+          // Reset button
+          loginButton.disabled = false;
+          loader.style.display = 'none';
+          buttonText.textContent = 'Sign In';
+        }
+      });
+      
+      // Tab switching
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.getAttribute('data-tab');
+          
+          // Update active state on tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          // Show active tab content
+          tabContents.forEach(content => {
+            content.style.display = 'none';
+          });
+          document.getElementById(`${tabId}-tab`).style.display = 'block';
+        });
+      });
+      
+      // Bottom navigation
+      const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+      bottomNavItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const tabId = item.getAttribute('data-tab');
+          
+          // Update active state on bottom nav
+          bottomNavItems.forEach(navItem => navItem.classList.remove('active'));
+          item.classList.add('active');
+          
+          // Find and click the corresponding tab
+          const tab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+          if (tab) tab.click();
+        });
+      });
+      
+      // Task checkbox toggling
+      taskCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', () => {
+          checkbox.classList.toggle('checked');
+          const taskTitle = checkbox.nextElementSibling.querySelector('.task-title');
+          taskTitle.classList.toggle('completed');
+        });
+      });
+      
+      // Auto-login for demo
+      if (document.getElementById('email').value && document.getElementById('password').value) {
+        // Add URL parameter tracking to debug where user came from
+        const urlParams = new URLSearchParams(window.location.search);
+        const source = urlParams.get('source') || 'direct';
+        console.log(`Login attempt from source: ${source}`);
+        
+        // Store entry point in session to help track the flow
+        sessionStorage.setItem('login_entry', source);
+        
+        // Short delay before auto-login
+        setTimeout(() => {
+          loginButton.click();
+        }, 500);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>homecue | Safari Login</title>
+  <style>
+    :root {
+      --primary-color: #16a1bd;
+      --primary-dark: #0d789c;
+      --background-color: #f7f9fc;
+      --text-color: #333;
+      --light-gray: #e2e8f0;
+      --error-color: #e53e3e;
+      --success-color: #38a169;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 32px 24px;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #1a202c;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #4a5568;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    
+    input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(22, 161, 189, 0.2);
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .remember-me input {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+    
+    .remember-me label {
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    
+    .success-message {
+      color: var(--success-color);
+      font-size: 14px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    
+    .loader {
+      display: none;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(22, 161, 189, 0.2);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      margin: 20px auto 0;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .status {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .redirect-panel {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .dashboard-content {
+      display: none;
+      width: 100%;
+      margin-top: 30px;
+    }
+    
+    .welcome-message {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .welcome-message h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .welcome-message p {
+      color: #4a5568;
+    }
+    
+    .task-list {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .task-list h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--light-gray);
+      padding-bottom: 8px;
+    }
+    
+    .task-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .task-item:last-child {
+      border-bottom: none;
+    }
+    
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+    }
+    
+    .task-details {
+      flex-grow: 1;
+    }
+    
+    .task-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .task-meta {
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    .task-priority {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .priority-high {
+      background-color: #FED7D7;
+      color: #E53E3E;
+    }
+    
+    .priority-medium {
+      background-color: #FEEBC8;
+      color: #DD6B20;
+    }
+    
+    .priority-low {
+      background-color: #C6F6D5;
+      color: #38A169;
+    }
+    
+    .add-task-button {
+      background-color: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      margin-top: 16px;
+    }
+    
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+    
+    .nav-button {
+      padding: 10px 16px;
+      background-color: white;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      font-weight: 500;
+      color: #4a5568;
+      flex: 1;
+      margin: 0 8px;
+      text-align: center;
+    }
+    
+    .nav-button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">homecue</div>
+    
+    <!-- Login Form -->
+    <div id="login-panel">
+      <h1>Welcome Back</h1>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" value="demo@example.com" autocomplete="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" value="password123" autocomplete="current-password" required>
+        </div>
+        
+        <div class="remember-me">
+          <input type="checkbox" id="remember" checked>
+          <label for="remember">Remember me</label>
+        </div>
+        
+        <button type="submit" id="login-button">Sign In</button>
+        
+        <div class="loader" id="loader"></div>
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
+      </form>
+    </div>
+    
+    <!-- Redirect Panel -->
+    <div class="redirect-panel" id="redirect-panel">
+      <h2>Login Successful!</h2>
+      <p>Your dashboard is loading...</p>
+      <div class="loader" style="display: block;"></div>
+    </div>
+    
+    <!-- Dashboard Content (fallback) -->
+    <div class="dashboard-content" id="dashboard-content">
+      <div class="welcome-message">
+        <h2>Welcome to homecue</h2>
+        <p>Your home maintenance companion</p>
+      </div>
+      
+      <div class="task-list">
+        <h3>Today's Tasks</h3>
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox">
+          <div class="task-details">
+            <div class="task-title">Check HVAC filters</div>
+            <div class="task-meta">Monthly maintenance</div>
+          </div>
+          <span class="task-priority priority-medium">Medium</span>
+        </div>
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox">
+          <div class="task-details">
+            <div class="task-title">Water plants</div>
+            <div class="task-meta">Weekly task</div>
+          </div>
+          <span class="task-priority priority-low">Low</span>
+        </div>
+        <button class="add-task-button">+ Add Task</button>
+      </div>
+      
+      <div class="navigation-buttons">
+        <div class="nav-button active">Today</div>
+        <div class="nav-button">Upcoming</div>
+        <div class="nav-button">Calendar</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <script>
+    // Elements
+    const loginPanel = document.getElementById('login-panel');
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const rememberCheckbox = document.getElementById('remember');
+    const loginButton = document.getElementById('login-button');
+    const loader = document.getElementById('loader');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+    const redirectPanel = document.getElementById('redirect-panel');
+    const dashboardContent = document.getElementById('dashboard-content');
+    const statusElement = document.getElementById('status');
+    
+    // Handle form submission
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+        // Reset messages
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        
+        // Show loader
+        loader.style.display = 'block';
+        loginButton.disabled = true;
+        
+        // Get values
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const remember = rememberCheckbox.checked;
+        
+        // Update status
+        updateStatus('Sending login request...');
+        
+        // Make login request
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            remember
+          }),
+          credentials: 'include'
+        });
+        
+        // Parse response
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to login');
+        }
+        
+        // Login successful
+        updateStatus('Login successful!');
+        successMessage.textContent = 'Login successful!';
+        successMessage.style.display = 'block';
+        
+        // Hide login panel and show redirect panel
+        loginPanel.style.display = 'none';
+        redirectPanel.style.display = 'block';
+        
+        // Try to fetch user data to confirm authentication
+        try {
+          updateStatus('Verifying authentication...');
+          const userResponse = await fetch('/api/auth/user', {
+            credentials: 'include'
+          });
+          
+          if (userResponse.ok) {
+            updateStatus('Authentication confirmed!');
+            
+            // Safari-friendly approach: show the dashboard in this page first
+            setTimeout(() => {
+              updateStatus('Loading dashboard content...');
+              redirectPanel.style.display = 'none';
+              dashboardContent.style.display = 'block';
+              
+              // After showing local content, try to redirect
+              setTimeout(() => {
+                updateStatus('Attempting safe redirect...');
+                try {
+                  // Approach 1: Use location.replace with relative path
+                  window.location.replace('mobile-dashboard');
+                } catch (error) {
+                  console.error('Redirect error:', error);
+                  updateStatus('Using fallback dashboard...');
+                }
+              }, 1500);
+            }, 1000);
+          } else {
+            throw new Error('Failed to verify authentication');
+          }
+        } catch (error) {
+          console.error('Auth verification error:', error);
+          // If verification fails, still try to redirect
+          updateStatus('Attempting redirect without verification...');
+          
+          setTimeout(() => {
+            try {
+              window.location.href = 'mobile-dashboard';
+            } catch (error) {
+              console.error('Redirect error:', error);
+              updateStatus('Using fallback dashboard...');
+              // Show local dashboard as last resort
+              redirectPanel.style.display = 'none';
+              dashboardContent.style.display = 'block';
+            }
+          }, 1000);
+        }
+        
+      } catch (error) {
+        // Handle error
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'An error occurred';
+        errorMessage.style.display = 'block';
+        loader.style.display = 'none';
+        loginButton.disabled = false;
+        updateStatus('Login failed. Please try again.');
+      }
+    });
+    
+    // Helper function to update status
+    function updateStatus(message) {
+      statusElement.textContent = message;
+      console.log('Status:', message);
+    }
+    
+    // Auto-start login on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateStatus('Page loaded. Auto-submitting login...');
+      loginButton.click();
+    });
+  </script>
+</body>
+</html>

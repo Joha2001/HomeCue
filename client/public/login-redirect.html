@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+      color: #333;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #16a1bd, #0d789c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #16a1bd;
+      width: 30px;
+      height: 30px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .message {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">homecue</div>
+    <div class="message">Login successful! Redirecting to dashboard...</div>
+    <div class="loader"></div>
+  </div>
+
+  <script>
+    // This script runs immediately when the page loads
+    window.onload = function() {
+      console.log("Redirect page loaded");
+      
+      // Session check timeout - if we don't redirect within 3 seconds, force it
+      setTimeout(function() {
+        console.log("Fallback redirect triggered");
+        window.location.href = "/dashboard";
+      }, 3000);
+      
+      // Try immediate redirect
+      try {
+        console.log("Attempting immediate redirect");
+        // Use replace to prevent back-button issues
+        window.location.replace("/dashboard");
+      } catch (e) {
+        console.error("Redirect error:", e);
+        // Fallback if the replace method fails
+        window.location.href = "/dashboard";
+      }
+    };
+  </script>
+</body>
+</html>

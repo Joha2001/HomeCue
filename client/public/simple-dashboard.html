@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>homecue | Dashboard</title>
+  <style>
+    :root {
+      --primary-color: #16a1bd;
+      --primary-dark: #0d789c;
+      --background-color: #f7f9fc;
+      --text-color: #333;
+      --light-gray: #e2e8f0;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    
+    header {
+      background-color: white;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+    
+    .welcome-section {
+      margin-bottom: 24px;
+    }
+    
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .welcome-subtitle {
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .add-task-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 16px;
+      box-shadow: 0 2px 4px rgba(22, 161, 189, 0.3);
+      cursor: pointer;
+    }
+    
+    .tabs {
+      display: flex;
+      background-color: white;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .tab {
+      flex: 1;
+      white-space: nowrap;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      min-width: 90px;
+      color: #666;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .stat-title {
+      font-weight: 600;
+      color: #4a5568;
+    }
+    
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .stat-value.today {
+      color: var(--primary-color);
+    }
+    
+    .stat-value.week {
+      color: #38a169;
+    }
+    
+    .stat-value.month {
+      color: #dd6b20;
+    }
+    
+    .stat-value.upcoming {
+      color: #718096;
+    }
+    
+    .progress-bar {
+      background-color: #edf2f7;
+      border-radius: 9999px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+    }
+    
+    .progress-today {
+      background-color: var(--primary-color);
+    }
+    
+    .progress-week {
+      background-color: #38a169;
+    }
+    
+    .progress-month {
+      background-color: #dd6b20;
+    }
+    
+    .progress-text {
+      font-size: 12px;
+      color: #718096;
+      text-align: right;
+    }
+    
+    .task-list {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .task-list-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .task-list-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a202c;
+    }
+    
+    .task-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      align-items: center;
+    }
+    
+    .task-item:last-child {
+      border-bottom: none;
+    }
+    
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e0;
+      border-radius: 4px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .task-checkbox.checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      position: relative;
+    }
+    
+    .task-checkbox.checked::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    .task-content {
+      flex-grow: 1;
+    }
+    
+    .task-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .task-title.completed {
+      text-decoration: line-through;
+      color: #a0aec0;
+    }
+    
+    .task-details {
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    .task-meta {
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    
+    .task-badge {
+      padding: 4px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-high {
+      background-color: #fed7d7;
+      color: #e53e3e;
+    }
+    
+    .badge-medium {
+      background-color: #feebc8;
+      color: #dd6b20;
+    }
+    
+    .badge-low {
+      background-color: #c6f6d5;
+      color: #38a169;
+    }
+    
+    .empty-state {
+      padding: 40px 16px;
+      text-align: center;
+    }
+    
+    .empty-state-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      color: #cbd5e0;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 64px;
+      box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+      z-index: 20;
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #718096;
+    }
+    
+    .bottom-nav-item.active {
+      color: var(--primary-color);
+    }
+    
+    .bottom-nav-icon {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+    
+    .bottom-nav-label {
+      font-size: 12px;
+    }
+    
+    .fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(22, 161, 189, 0.3);
+      z-index: 15;
+    }
+    
+    .fab-icon {
+      color: white;
+      width: 24px;
+      height: 24px;
+    }
+    
+    .vendor-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    
+    @media (min-width: 640px) {
+      .vendor-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .vendor-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .vendor-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .vendor-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .vendor-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-right: 12px;
+      background-color: #edf2f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 18px;
+    }
+    
+    .vendor-info {
+      flex-grow: 1;
+    }
+    
+    .vendor-name {
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 4px;
+    }
+    
+    .vendor-category {
+      color: #718096;
+      font-size: 14px;
+    }
+    
+    .vendor-description {
+      margin-bottom: 16px;
+      color: #4a5568;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .vendor-contact {
+      background-color: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 500;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">homecue</div>
+    </div>
+  </header>
+  
+  <main>
+    <section class="welcome-section">
+      <h1 class="welcome-title">Welcome Back, Demo User</h1>
+      <p class="welcome-subtitle">Here's what you need to tackle today.</p>
+      <button class="add-task-btn">+ Add New Task</button>
+    </section>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="today">Today</div>
+      <div class="tab" data-tab="upcoming">Upcoming</div>
+      <div class="tab" data-tab="calendar">Calendar</div>
+      <div class="tab" data-tab="vendors">Vendors</div>
+    </div>
+    
+    <div class="tab-content active" id="overview">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Today</div>
+            <div class="stat-value today">2</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill progress-today" style="width: 50%"></div>
+          </div>
+          <div class="progress-text">50% completed</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">This Week</div>
+            <div class="stat-value week">5</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill progress-week" style="width: 20%"></div>
+          </div>
+          <div class="progress-text">20% completed</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">This Month</div>
+            <div class="stat-value month">8</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill progress-month" style="width: 12%"></div>
+          </div>
+          <div class="progress-text">12% completed</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Upcoming</div>
+            <div class="stat-value upcoming">12</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">0% completed</div>
+        </div>
+      </div>
+      
+      <div class="task-list">
+        <div class="task-list-header">
+          <h2 class="task-list-title">Recent Tasks</h2>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Check HVAC filters</div>
+            <div class="task-details">Due today • Monthly maintenance</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-medium">Medium</span>
+          </div>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox checked"></div>
+          <div class="task-content">
+            <div class="task-title completed">Water plants</div>
+            <div class="task-details">Completed today • Weekly task</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-low">Low</span>
+          </div>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Pay mortgage</div>
+            <div class="task-details">Due in 2 days • Monthly payment</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-high">High</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="today">
+      <div class="task-list">
+        <div class="task-list-header">
+          <h2 class="task-list-title">Today's Tasks</h2>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Check HVAC filters</div>
+            <div class="task-details">Monthly maintenance</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-medium">Medium</span>
+          </div>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox checked"></div>
+          <div class="task-content">
+            <div class="task-title completed">Water plants</div>
+            <div class="task-details">Weekly task</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-low">Low</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="upcoming">
+      <div class="task-list">
+        <div class="task-list-header">
+          <h2 class="task-list-title">Upcoming Tasks</h2>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Pay mortgage</div>
+            <div class="task-details">Due in 2 days • Monthly payment</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-high">High</span>
+          </div>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Change air filter</div>
+            <div class="task-details">Due in 3 days • Quarterly maintenance</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-medium">Medium</span>
+          </div>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-checkbox"></div>
+          <div class="task-content">
+            <div class="task-title">Lawn mowing</div>
+            <div class="task-details">Due in 5 days • Weekly maintenance</div>
+          </div>
+          <div class="task-meta">
+            <span class="task-badge badge-low">Low</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="calendar">
+      <div class="task-list">
+        <div class="task-list-header">
+          <h2 class="task-list-title">Calendar View</h2>
+        </div>
+        
+        <div class="empty-state">
+          <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3>Calendar View</h3>
+          <p>The calendar feature is available in the full app.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="vendors">
+      <div class="vendor-list">
+        <div class="vendor-card">
+          <div class="vendor-header">
+            <div class="vendor-logo">AP</div>
+            <div class="vendor-info">
+              <div class="vendor-name">ABC Plumbing</div>
+              <div class="vendor-category">Plumbing</div>
+            </div>
+          </div>
+          <div class="vendor-description">Professional plumbing services for repairs, installations, and maintenance.</div>
+          <button class="vendor-contact">Contact</button>
+        </div>
+        
+        <div class="vendor-card">
+          <div class="vendor-header">
+            <div class="vendor-logo">EE</div>
+            <div class="vendor-info">
+              <div class="vendor-name">Elite Electricians</div>
+              <div class="vendor-category">Electrical</div>
+            </div>
+          </div>
+          <div class="vendor-description">Licensed electricians for all your electrical needs.</div>
+          <button class="vendor-contact">Contact</button>
+        </div>
+        
+        <div class="vendor-card">
+          <div class="vendor-header">
+            <div class="vendor-logo">GG</div>
+            <div class="vendor-info">
+              <div class="vendor-name">Green Gardens</div>
+              <div class="vendor-category">Landscaping</div>
+            </div>
+          </div>
+          <div class="vendor-description">Complete landscaping and garden maintenance services.</div>
+          <button class="vendor-contact">Contact</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <div class="fab">
+    <svg class="fab-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    </svg>
+  </div>
+  
+  <div class="bottom-nav">
+    <div class="bottom-nav-item active">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+      <span class="bottom-nav-label">Home</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span class="bottom-nav-label">Calendar</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+      </svg>
+      <span class="bottom-nav-label">Tasks</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg class="bottom-nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span class="bottom-nav-label">Vendors</span>
+    </div>
+  </div>
+  
+  <script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Update active content
+        tabContents.forEach(content => content.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    
+    // Task checkbox functionality
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('click', () => {
+        const isChecked = checkbox.classList.contains('checked');
+        const taskTitle = checkbox.nextElementSibling.querySelector('.task-title');
+        
+        if (!isChecked) {
+          checkbox.classList.add('checked');
+          taskTitle.classList.add('completed');
+        } else {
+          checkbox.classList.remove('checked');
+          taskTitle.classList.remove('completed');
+        }
+      });
+    });
+    
+    // Add task button
+    const addTaskBtn = document.querySelector('.add-task-btn');
+    const fab = document.querySelector('.fab');
+    
+    [addTaskBtn, fab].forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert('Add Task functionality is available in the full app.');
+      });
+    });
+    
+    // Vendor contact buttons
+    const vendorContactBtns = document.querySelectorAll('.vendor-contact');
+    
+    vendorContactBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const vendorName = btn.closest('.vendor-card').querySelector('.vendor-name').textContent;
+        alert(`Contacting ${vendorName}. This feature is available in the full app.`);
+      });
+    });
+    
+    // Bottom navigation
+    const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+    
+    bottomNavItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        bottomNavItems.forEach(navItem => navItem.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Map bottom nav items to tabs
+        const tabMap = ['overview', 'calendar', 'today', 'vendors'];
+        const tabToActivate = document.querySelector(`.tab[data-tab="${tabMap[index]}"]`);
+        if (tabToActivate) {
+          tabToActivate.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

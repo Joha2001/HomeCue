@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>homecue | iOS Login</title>
+  <style>
+    :root {
+      --primary-color: #16a1bd;
+      --primary-dark: #0d789c;
+      --background-color: #f7f9fc;
+      --text-color: #333;
+      --light-gray: #e2e8f0;
+      --error-color: #e53e3e;
+      --success-color: #38a169;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 32px 24px;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #1a202c;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #4a5568;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    
+    input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(22, 161, 189, 0.2);
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .remember-me input {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+    
+    .remember-me label {
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    
+    .success-message {
+      color: var(--success-color);
+      font-size: 14px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    
+    .loader {
+      display: none;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(22, 161, 189, 0.2);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      margin: 20px auto 0;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .status {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .redirect-container {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .redirect-button {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">homecue</div>
+    <h1>Welcome Back</h1>
+    
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" value="demo@example.com" autocomplete="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" value="password123" autocomplete="current-password" required>
+      </div>
+      
+      <div class="remember-me">
+        <input type="checkbox" id="remember" checked>
+        <label for="remember">Remember me</label>
+      </div>
+      
+      <button type="submit" id="login-button">Sign In</button>
+      
+      <div class="loader" id="loader"></div>
+      <div class="error-message" id="error-message"></div>
+      <div class="success-message" id="success-message"></div>
+    </form>
+    
+    <div class="redirect-container" id="redirect-container">
+      <p>Login successful! Click the button below to go to your dashboard:</p>
+      <a href="/dashboard-redirect" class="redirect-button">Go to Dashboard</a>
+    </div>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <script>
+    // Elements
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const rememberCheckbox = document.getElementById('remember');
+    const loginButton = document.getElementById('login-button');
+    const loader = document.getElementById('loader');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+    const redirectContainer = document.getElementById('redirect-container');
+    const statusElement = document.getElementById('status');
+    
+    // Handle form submission
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+        // Reset messages
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        
+        // Show loader
+        loader.style.display = 'block';
+        loginButton.disabled = true;
+        
+        // Get values
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const remember = rememberCheckbox.checked;
+        
+        // Update status
+        updateStatus('Sending login request...');
+        
+        // Make login request
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            remember
+          }),
+          credentials: 'include'
+        });
+        
+        // Parse response
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to login');
+        }
+        
+        // Login successful
+        updateStatus('Login successful!');
+        successMessage.textContent = 'Login successful!';
+        successMessage.style.display = 'block';
+        
+        // Hide form and show redirect container
+        loginForm.style.display = 'none';
+        redirectContainer.style.display = 'block';
+        
+        // Auto-redirect attempt with fallback button
+        updateStatus('Preparing to redirect...');
+        
+        // Try multiple redirect approaches with delays
+        setTimeout(() => {
+          updateStatus('Redirecting to dashboard...');
+          
+          try {
+            // Method 1: Try server-side redirect
+            window.location.href = '/dashboard-redirect';
+            
+            // Method 2: Fallback after a short delay
+            setTimeout(() => {
+              updateStatus('Still redirecting...');
+              window.location.replace('/dashboard');
+            }, 1000);
+          } catch (error) {
+            updateStatus('Automatic redirect failed. Please use the button.');
+            console.error('Redirect error:', error);
+          }
+        }, 500);
+        
+      } catch (error) {
+        // Handle error
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'An error occurred';
+        errorMessage.style.display = 'block';
+        loader.style.display = 'none';
+        loginButton.disabled = false;
+        updateStatus('Login failed. Please try again.');
+      }
+    });
+    
+    // Helper function to update status
+    function updateStatus(message) {
+      statusElement.textContent = message;
+      console.log('Status:', message);
+    }
+    
+    // Auto-start login on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateStatus('Page loaded. Auto-submitting login...');
+      loginButton.click();
+    });
+  </script>
+</body>
+</html>
